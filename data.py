@@ -167,7 +167,9 @@ def db_connect():
     
     global ingest_data
     clear=st.sidebar.checkbox("*Clear Old Data & Results*",key='clear')
-    ingest_data=st.sidebar.checkbox("*Store Current Data*",key="ingest_data")
+    ingest_data=st.sidebar.checkbox("*Store Current Stock Data*",key="ingest_data")
+    store_display_result=st.sidebar.checkbox("*Store & Display Result Table*",key="store_display_result")
+
     # Entering the password for database
     mypassword = st.sidebar.text_input("**Password Required**", type="password", placeholder="Enter password for DB",key="mypassword")
     global connected
@@ -200,10 +202,15 @@ def db_connect():
             jsondata = stock_data.to_dict(orient="records")
             db[f'{company_name}_Data'].insert_many(jsondata)
             db[f'{company_name}_Data'].delete_many({'Open':'null'})
-            if clear:
-                db.drop_collection(f'{company_name}_ML_Results') 
-                db.create_collection(f'{company_name}_ML_Results')
-                db.drop_collection(f'{company_name}_TSA_Results') 
-                db.create_collection(f'{company_name}_TSA_Results') 
-
+        if clear:
+            db.drop_collection(f'{company_name}_ML_Results') 
+            db.create_collection(f'{company_name}_ML_Results')
+            db.drop_collection(f'{company_name}_TSA_Results') 
+            db.create_collection(f'{company_name}_TSA_Results')
+    if connection_successful: 
+        if store_display_result:
+            if f'{company_name}_ML_Results' not in db.list_collection_names():
+                db.create_collection(f'{company_name}_ML_Results') 
+            if f'{company_name}_TSA_Results' not in db.list_collection_names():
+                db.create_collection(f'{company_name}_TSA_Results')
 
