@@ -217,7 +217,7 @@ def main():
             jsondata_pred = valid.to_dict(orient="records")
             data.db[f'{company}_ML({models[regressor]})_Prediction'].insert_many(jsondata_pred)
             
-            st.success("**Results along with original & model-predicted stock price data are successfully stored.**")
+            st.success("**Results along with original & model-predicted stock price data are successfully ingested into database.**")
             st.markdown("<h2 style='text-align: center; color: green;'>**** Thank you! ****</h2>", unsafe_allow_html=True)
         
         ################## Time Series Analysis ##############

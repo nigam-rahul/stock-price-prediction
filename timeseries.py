@@ -171,7 +171,7 @@ def tsa(df,days):
         jsondata_pred = valid.to_dict(orient="records")
         data.db[f'{company}_TSA({best_model})_Prediction'].insert_many(jsondata_pred)
         
-        st.success("**Results along with original & model-predicted stock price data are successfully stored.**")
+        st.success("**Results along with original & model-predicted stock price data are successfully ingested into database.**")
         st.markdown("<h2 style='text-align: center; color: green;'>**** Thank you! ****</h2>", unsafe_allow_html=True)
 
     ######## Smoothing Methods(statsmodel Library) #################
@@ -377,7 +377,7 @@ def tsa(df,days):
             fcast1 = fit1.forecast(days)
             model_forecast[best_model]=fcast1
            
-        if best_model=="Holt's Exponential method)":
+        if best_model=="Holt's Exponential method":
             fit1 = Holt(y,exponential=True).fit(smoothing_level=alpha,
                                  smoothing_trend=beta)
             fcast1 = fit1.forecast(days)
