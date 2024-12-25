@@ -115,34 +115,34 @@ Below is the architecture of the project, demonstrating data flow, model executi
 
    - Fetches stock data from Yahoo Finance using BeautifulSoup.
    - Stores raw  data in MongoDB Atlas.
-   ![code1](./images/code1.jpg)
-   ![front1](./images/front1.jpg)
-   ![front2](./images/front2.jpg)
-   ![front3](./images/front3.jpg)
+   ![code1](./images/code1.JPG)
+   ![front1](./images/front1.JPG)
+   ![front2](./images/front2.JPG)
+   ![front3](./images/front3.JPG)
    
 2. **EDA (Exploratory Data Analysis)**
 
    - Analyzes historical stock price trends.
    - Computes key statistics and visualizes max/min prices.
    ![newplot](./images/newplot.png)
-   ![plot1](./images/plot1.jpg)
-   ![plot2](./images/plot2.jpg)
-   ![plot3](./images/plot3.jpg)
-   ![plot4](./images/plot4.jpg)
-   ![plot5](./images/plot5.jpg)
-   ![plot6](./images/plot6.jpg)
+   ![plot1](./images/plot1.JPG)
+   ![plot2](./images/plot2.JPG)
+   ![plot3](./images/plot3.JPG)
+   ![plot4](./images/plot4.JPG)
+   ![plot5](./images/plot5.JPG)
+   ![plot6](./images/plot6.JPG)
 
 3. **Time Series Analysis**
    - Forecasts of stock price for selected number of days.
    - Implements various Smoothing techniques (statsmodels).
    - Also utilizes  ARIMA (statsmodels) and AutoETS (sktime).
 
-   ![pred1](./images/pred1.jpg)
-   ![pred2](./images/pred2.jpg)
-   ![pred3](./images/pred3.jpg)
-   ![pred4](./images/pred4.jpg)
-   ![pred5](./images/pred5.jpg)
-   ![result7](./images/result7.jpg)
+   ![pred1](./images/pred1.JPG)
+   ![pred2](./images/pred2.JPG)
+   ![pred3](./images/pred3.JPG)
+   ![pred4](./images/pred4.JPG)
+   ![pred5](./images/pred5.JPG)
+   ![result7](./images/result7.JPG)
 
 
 4. **Machine Learning**
@@ -153,7 +153,7 @@ Below is the architecture of the project, demonstrating data flow, model executi
      - Decision Trees
      - Random Forest
    - Evaluation metrics: RMSE, MAPE, MAE.
-   ![result6](./images/result6.jpg)
+   ![result6](./images/result6.JPG)
 
 ---
 
@@ -173,10 +173,10 @@ Below is the architecture of the project, demonstrating data flow, model executi
 
 1. **Predicted vs. Actual Prices:** Helps compare forecasts.
 2. **Evaluation Metrics:** Identifies the most accurate model.
-![mongo1](./images/mongo1.jpg)
-![mongo2](./images/mongo2.jpg)
-![mongo3](./images/mongo3.jpg)
-![mongo4](./images/mongo4.jpg)
+![mongo1](./images/mongo1.JPG)
+![mongo2](./images/mongo2.JPG)
+![mongo3](./images/mongo3.JPG)
+![mongo4](./images/mongo4.JPG)
 
 ---
 
