@@ -94,7 +94,10 @@ def main():
         
         models = {"Time Series Analysis":'TS',"Support Vector Machine (SVM)":"SVM", "Linear Regression":"LR", "Decision Tree Regression":"DT", "Random Forest Regression":"RF"}
         regressor = st.sidebar.selectbox("#### Choose Regressor", ("Time Series Analysis","Support Vector Machine (SVM)", "Linear Regression", "Decision Tree Regression","Random Forest Regression") , index=None, placeholder='ML Algorithm')
-            
+        if regressor:
+            pass
+        else:
+            st.write("***Plaese select the algorithm from drop-down list(side-bar) then click on Prediction button and see the results!***")       
     ######## ML-Models : Prediction, Plot and Performance ############
                         ######## Also ##########
     ######## Storing actual-predicted values & results to MongoDB ##########
