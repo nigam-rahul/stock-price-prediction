@@ -5,7 +5,7 @@ pandas==1.5.3
 plotly==5.12.0
 pmdarima==2.0.4
 pymongo==4.3.3
-requests-2.32.4
+requests==2.32.4
 scikit-learn==1.2.0
 seaborn==0.12.2
 sktime==0.34.1
