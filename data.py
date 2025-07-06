@@ -9,6 +9,7 @@ import streamlit as st
 import yfinance as yf
 from bs4 import BeautifulSoup as bs
 import requests
+import sys
 from pymongo.mongo_client import MongoClient
 
 ######### /*Scrapping the Yahoo Finance website*/ ###########
@@ -65,72 +66,84 @@ def fetch_data():
         if selected_year: 
 ### Scrapping the basic information of the selected company
 
-            headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0'}
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+            }
             @st.cache_resource
             def web_url():  
-                profile_url = f'https://finance.yahoo.com/quote/{stock_ticker}/profile/'
                 try:
+                    profile_url = f'https://finance.yahoo.com/quote/{stock_ticker}/profile/'
                     profile_response=requests.get(profile_url,headers=headers)
+                    if profile_response.status_code != 200:
+                        raise Exception(f"Failed to fetch profile page, status code: {profile_response.status_code}")
                     profile_response.raise_for_status()
                     soup_obj = bs(profile_response.content)    
                     return soup_obj, profile_response
                 except Exception as err:
-                    st.error(f"**Sorry! An error occurred - **{err}")
-
-            soup, web_response = web_url()
-            if web_response:
-                # Company heading with ticker
-                heading=soup.body.select('h1')
-                main_name=heading[1].get_text()
-                st.header(main_name,divider='red')
-                
-                price_section = soup.find('section', attrs={'data-testid': 'quote-price'})
-                # Current Price
-                price_info=price_section.section.div.select('fin-streamer')
-                latest_price=price_info[0].get_text()
-                st.write(f"## {latest_price} :material/currency_rupee:")
-                
-                # Change and percentage
-                change_amt=price_info[1].get_text(strip=True)
-                change_perc=price_info[2].get_text(strip=True)
-                
-                # Current Time
-                time=price_section.section.find('div', attrs={'slot':'marketTimeNotice'})
-                current_time=time.get_text(strip=True)
-                
-                left, middle, right = st.columns([2,3,1])
-                left.write(f":blue[**{change_amt}** **{change_perc}**]")
-                middle.write(f":blue-background[**{current_time}**]")
-                right.caption("*Price is in INR*")
-                
-                ###### Company related some more information ######
-                
-                # Full Name
-                ast_profile = soup.find('section', attrs={'data-testid': 'asset-profile'}) 
-                global company_name
-                company_name=ast_profile.header.get_text(strip=True)
-                st.subheader(company_name)
-                
-                # Address
-                address=ast_profile.div.div.div
-                add_content=address.get_text()
-                st.write(f"*{add_content}*")
-                
-                # Website and Contact detail
-                link=ast_profile.div.div.find_all('a')
-                contact_num=link[0].get_text(strip=True)
-                web=link[1]
-                website=web['href']
-                c1, c2, c3 = st.columns([2,1,1])
-                c1.write(f"[***{website}***](%s)" % website)
-                c2.write(f"**{contact_num}**")
-                
-                st.write("#### Company Profile")
-                # Description
-                desc = soup.find('section', attrs={'data-testid': 'description'})
-                description=desc.select('p')
-                desc_content=description[0].get_text(strip=True)
-                st.write(f"{desc_content}")
+                    st.error(f" **Sorry! An error occurred -** {err}")
+                    return None, None
+            try:
+                soup, web_response = web_url()
+                if web_response:
+                    # Company heading with ticker
+                    heading=soup.body.select('h1')
+                    main_name=heading[1].get_text()
+                    st.header(main_name,divider='red')
+                    
+                    try:
+                        price_section = soup.find('section', attrs={'data-testid': 'quote-price'})
+                        # Current Price
+                        price_info=price_section.section.div.select('fin-streamer')
+                        latest_price=price_info[0].get_text()
+                        st.write(f"## {latest_price} :material/currency_rupee:")
+                        
+                        # Change and percentage
+                        change_amt=price_info[1].get_text(strip=True)
+                        change_perc=price_info[2].get_text(strip=True)
+                        
+                        # Current Time
+                        time=price_section.section.find('div', attrs={'slot':'marketTimeNotice'})
+                        current_time=time.get_text(strip=True)
+                        
+                        left, middle, right = st.columns([2,3,1])
+                        left.write(f":blue[**{change_amt}** **{change_perc}**]")
+                        middle.write(f":blue-background[**{current_time}**]")
+                        right.caption("*Price is in INR*")
+                    except Exception as err:
+                        st.error(f" **Website has been updated! Live stock price information isn't available -** {err}")
+                    
+                    ###### Company related some more information ######
+                    
+                    # Full Name
+                    ast_profile = soup.find('section', attrs={'data-testid': 'asset-profile'}) 
+                    global company_name
+                    company_name=ast_profile.header.get_text(strip=True)
+                    st.subheader(company_name)
+                    
+                    # Address
+                    address=ast_profile.div.div.div
+                    add_content=address.get_text()
+                    st.write(f"*{add_content}*")
+                    
+                    # Website and Contact detail
+                    link=ast_profile.div.div.find_all('a')
+                    contact_num=link[0].get_text(strip=True)
+                    web=link[1]
+                    website=web['href']
+                    c1, c2, c3 = st.columns([2,1,1])
+                    c1.write(f"[***{website}***](%s)" % website)
+                    c2.write(f"**{contact_num}**")
+                    
+                    st.write("#### Company Profile")
+                    # Description
+                    desc = soup.find('section', attrs={'data-testid': 'description'})
+                    description=desc.select('p')
+                    desc_content=description[0].get_text(strip=True)
+                    st.write(f"{desc_content}")
+            except Exception as err:
+                st.error(f" **Website has been updated! Basic information isn't available as of now -** {err}")
             
 ############## Fetching the Stock Price Data ##############
 
@@ -141,18 +154,31 @@ def fetch_data():
                     year_id=year_key
             @st.cache_data
             def get_stock_price():
-                ticker=yf.Ticker(stock_ticker)
-                hist_data=ticker.history(period=year_id,interval='1d')
+                try:
+                    ticker=yf.Ticker(stock_ticker)
+                    hist_data=ticker.history(period=year_id,interval='1d')
+                    if hist_data is not None:
+                        return hist_data
+                except Exception as err:
+                    st.error(f" **Sorry! Error in  fetching data -** {err}")
+                    st.error(''' **Failed to fetch stock data!
+                             No data available for the specified ticker and period.** ''')
+                    sys.exit()
+
+            global stock_data
+            try:
+                stock_data=get_stock_price()
                 hist_data=hist_data.reset_index()
                 hist_data['Date']=hist_data['Date'].dt.date
-                return hist_data
-                
-            global stock_data
-            stock_data=get_stock_price()
-            if price_tbl:
-                st.subheader(f"Stock price of {company_name} for last {years[year_id]}",divider='red')
-                st.dataframe(stock_data)
-            return stock_data
+                if price_tbl:
+                    st.subheader(f"Stock price of {company_name} for last {years[year_id]}",divider='red')
+                    st.dataframe(stock_data)
+                if stock_data is not None:
+                    st.success(" **Congratulations! Historical stock price data is successfully fetched.** ")
+                    return stock_data
+            except Exception as err:
+                st.error(f" **Sorry! Error found in data -** {err}")
+                sys.exit()
             
         else:
             st.write(":red[**Year not selected!**]")
