@@ -168,8 +168,8 @@ def fetch_data():
             global stock_data
             try:
                 stock_data=get_stock_price()
-                hist_data=hist_data.reset_index()
-                hist_data['Date']=hist_data['Date'].dt.date
+                stock_data=stock_data.reset_index()
+                stock_data['Date']=stock_data['Date'].dt.date
                 if price_tbl:
                     st.subheader(f"Stock price of {company_name} for last {years[year_id]}",divider='red')
                     st.dataframe(stock_data)
